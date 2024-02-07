@@ -16,4 +16,4 @@ SRC_FILES="$SRC_FILE $SHARED_FILES"
 echo "Compiling: $SRC_FILES"
 OUTPUT_NAME="$(basename $SRC_FILE .c)_$(date +%Y-%m-%d_%H.%M.%S)"
 mkdir -p build
-clang -Wall -Werror -Wpedantic -std=c11 -o build/$OUTPUT_NAME $SRC_FILES
+clang -Wall -Werror -Wpedantic -std=c11 -g -O0 -o build/$OUTPUT_NAME $SRC_FILES
