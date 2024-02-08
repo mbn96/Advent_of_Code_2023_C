@@ -16,13 +16,14 @@ int main(int argc, char *argv[]) {
 
   LINER(games, fc);
   str_view game;
-  size_t gameID = 1, sum = 0;
+  size_t gameID = 1, id_sum = 0, color_sum = 0;
   while (next_token(&games, &game)) {
     char *new_pos = strchr(game.data, ':') + 1;
     game.len -= new_pos - game.data;
     game.data = new_pos;
 
     bool possible = true;
+    size_t max_color[3] = {0, 0, 0};
 
     str_view pick;
     SPLITTER(picks, game, ';');
@@ -35,34 +36,35 @@ int main(int argc, char *argv[]) {
         char *c_name = strchr(color.data, ' ');
         *c_name = '\0';
         ++c_name;
-        int count = atoi(color.data);
+        size_t count = atoi(color.data);
         switch (c_name[0]) {
         case 'r':
-          possible = count <= 12;
+          possible = possible && count <= 12;
+          max_color[0] = count > max_color[0] ? count : max_color[0];
           break;
         case 'g':
-          possible = count <= 13;
+          possible = possible && count <= 13;
+          max_color[1] = count > max_color[1] ? count : max_color[1];
           break;
         case 'b':
-          possible = count <= 14;
+          possible = possible && count <= 14;
+          max_color[2] = count > max_color[2] ? count : max_color[2];
           break;
-        }
-        if (!possible) {
-          goto game_end;
         }
         printf("%.*s\n", (int)color.len, color.data);
       }
       printf("--Pick End--\n");
     }
-  game_end:
     printf("----Game End----\n");
     if (possible) {
-      sum += gameID;
+      id_sum += gameID;
     }
+    color_sum += (max_color[0] * max_color[1] * max_color[2]);
     ++gameID;
   }
 
-  printf("GameID sum: %zu\n", sum);
+  printf("GameID sum: %zu\n", id_sum);
+  printf("Color sum: %zu\n", color_sum);
 
   free(fc.data);
   return EXIT_SUCCESS;
