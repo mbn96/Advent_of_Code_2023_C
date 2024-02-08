@@ -30,15 +30,17 @@ typedef file_content str_view;
 typedef struct {
   file_content fc;
   char *pos;
-} Liner;
+  char delim;
+} Spliter;
 
 typedef bool (*predicate)(char a);
 
-#define LINER(name, fc) Liner name = {.fc = fc, .pos = fc.data}
+#define SPLITTER(name, strv, dlm) Spliter name = {.fc = strv, .pos = strv.data, .delim = dlm}
+#define LINER(name, fc) SPLITTER(name, fc, '\n')
 
 bool read_file(const char *path, file_content *fc);
 
-bool next_line(Liner *liner, str_view *line);
+bool next_token(Spliter *liner, str_view *line);
 
 int str_find_char(const str_view *sv, predicate pred);
 int str_find_last_char(const str_view *sv, predicate pred);

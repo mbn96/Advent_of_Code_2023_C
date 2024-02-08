@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
   LINER(lines, fc);
   str_view line;
   size_t sum = 0;
-  while (next_line(&lines, &line)) {
+  while (next_token(&lines, &line)) {
     if (line.len != 0) {
       int firstDigit = str_find_char(&line, isDigit);
       int lastDigit = str_find_last_char(&line, isDigit);

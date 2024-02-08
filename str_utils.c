@@ -1,12 +1,12 @@
 #include "defs.h"
 
-bool next_line(Liner *liner, str_view *line) {
+bool next_token(Spliter *liner, str_view *line) {
   if (liner->pos >= (liner->fc.data + liner->fc.len)) {
     return false;
   }
   char *start = liner->pos;
-  char *end = strchr(start, '\n');
-  if (end == NULL) {
+  char *end = strchr(start, liner->delim);
+  if (end == NULL || (end >= (liner->fc.data + liner->fc.len))) {
     line->data = start;
     line->len = liner->fc.len - (liner->pos - liner->fc.data);
     liner->pos = liner->fc.data + liner->fc.len;
@@ -36,4 +36,3 @@ int str_find_last_char(const str_view *sv, predicate pred) {
   }
   return -1;
 }
-
