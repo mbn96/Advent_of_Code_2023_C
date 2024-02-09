@@ -1,8 +1,34 @@
 #include "../defs.h"
-#include <string.h>
+
+/*
+ * Structs for storing x and y coordinates and gear data, for a 64-bit machine,
+ * I might change it to support 32-bit later. I am trying to keep it as simple
+ * as possible. only allocate memory on the stack. We could change the hash_map
+ * implementation later to support for sized-types since we already have use
+ * malloc for bucket nodes.
+ * But for now I'm casting a 64-bit value as a void* so I don't need to allocate
+ * memory on the heap for data structs.
+ * TODO: support 32-bit
+ */
+typedef union {
+  size_t val;
+  struct {
+    u32 x, y;
+  };
+} coord;
+
+typedef union {
+  size_t val;
+  struct {
+    size_t count : 8;
+    size_t ratio : 56;
+  };
+} gear_data;
+
+// comp func for coord
+static bool coord_cmp_func(const void *a, const void *b) { return a == b; }
 
 static bool isDigit(char c) { return c >= '0' && c <= '9'; }
-static bool isNotDigit(char c) { return c < '0' || c > '9'; }
 
 int main(int argc, char *argv[]) {
   if (argc < 2) {
@@ -28,6 +54,8 @@ int main(int argc, char *argv[]) {
         '\0'; // the last line is null terminated so it's not out of bounds.
   }
   size_t part_sum = 0;
+  size_t gear_ratio_sum = 0;
+  hash_map *hm = hash_map_new(hash_int, coord_cmp_func);
   for (size_t i = 0; i < height; i++) {
     char *row = grid[i];
     while (*row != '\0') {
@@ -50,13 +78,28 @@ int main(int argc, char *argv[]) {
           char *start = left + top * (width + 1);
           char *end = right + top * (width + 1);
           for (; start <= end; ++start) {
-            if (isNotDigit(*start) && *start != '.' && *start != '\0') {
+            if (!isDigit(*start) && *start != '.' && *start != '\0') {
               isPart = true;
-              break;
+              if (*start == '*') {
+                gear_data gear_d;
+                coord c = {.y = i + top, .x = start - grid[i + top]};
+                void *gear_d_temp = hash_map_get(hm, (void *)c.val);
+                if (gear_d_temp == NULL) {
+                  gear_d.ratio = num;
+                  gear_d.count = 1;
+                } else {
+                  gear_d = *(gear_data *)&gear_d_temp;
+                  gear_d.count++;
+                }
+                if (gear_d.count == 2) {
+                  gear_d.ratio *= num;
+                  gear_ratio_sum += gear_d.ratio;
+                } else if (gear_d.count == 3) {
+                  gear_ratio_sum -= gear_d.ratio;
+                }
+                hash_map_put(hm, (void *)c.val, (void *)gear_d.val);
+              }
             }
-          }
-          if (isPart) {
-            break;
           }
         }
 
@@ -69,8 +112,10 @@ int main(int argc, char *argv[]) {
       }
     }
   }
-  printf("%zu\n", part_sum);
+  printf("Part sum: %zu\n", part_sum);
+  printf("Gear ratio sum: %zu\n", gear_ratio_sum);
 
+  hash_map_free(hm);
   free(fc.data);
   return EXIT_SUCCESS;
 }
