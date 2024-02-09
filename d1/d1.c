@@ -1,6 +1,6 @@
 #include "../defs.h"
 
-bool isDigit(char c) { return c >= '0' && c <= '9'; }
+static bool isDigit(char c) { return c >= '0' && c <= '9'; }
 
 struct letterDigits {
   char d1, d2;
@@ -14,7 +14,7 @@ typedef struct {
   char *spell;
 } digit_spell_t;
 
-ld_t find_letter_digits(const str_view *s) {
+static ld_t find_letter_digits(const str_view *s) {
 
   static const digit_spell_t spells[10] = {
       {0, 0, "zero"},
