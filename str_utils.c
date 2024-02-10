@@ -29,7 +29,7 @@ int str_find_char(const str_view *sv, predicate pred) {
 }
 
 int str_find_last_char(const str_view *sv, predicate pred) {
-  for (size_t i = sv->len - 1; i >= 0; i--) {
+  for (int i = sv->len - 1; i >= 0; i--) {
     if (pred(sv->data[i])) {
       return i;
     }
