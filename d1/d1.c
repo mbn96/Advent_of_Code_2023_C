@@ -4,13 +4,13 @@ static bool isDigit(char c) { return c >= '0' && c <= '9'; }
 
 struct letterDigits {
   char d1, d2;
-  int d1_idx, d2_idx;
+  int  d1_idx, d2_idx;
 };
 typedef struct letterDigits ld_t;
 
 typedef struct {
-  u16 first3LettersSum;
-  u8 len;
+  u16   first3LettersSum;
+  u8    len;
   char *spell;
 } digit_spell_t;
 
@@ -35,18 +35,17 @@ static ld_t find_letter_digits(const str_view *s) {
 
   ld_t ld;
   ld.d1_idx = ld.d2_idx = -1;
-  u16 sum = s->data[0] + s->data[1];
+  u16 sum               = s->data[0] + s->data[1];
   for (size_t c = 0; c < s->len - 2; ++c) {
     sum += s->data[c + 2];
     for (int i = 1; i < 10; i++) {
-      if (sum == spells[i].first3LettersSum &&
-          ((s->len - c) >= spells[i].len) &&
+      if (sum == spells[i].first3LettersSum && ((s->len - c) >= spells[i].len) &&
           strncmp(s->data + c, spells[i].spell, spells[i].len) == 0) {
         if (ld.d1_idx == -1) {
-          ld.d1 = i + '0';
+          ld.d1     = i + '0';
           ld.d1_idx = c;
         }
-        ld.d2 = i + '0';
+        ld.d2     = i + '0';
         ld.d2_idx = c;
         break;
       }
@@ -69,19 +68,19 @@ int main(int argc, char *argv[]) {
 
   LINER(lines, fc);
   str_view line;
-  size_t sum = 0;
+  size_t   sum = 0;
   while (next_token(&lines, &line)) {
     if (line.len != 0) {
-      int firstDigit = str_find_char(&line, isDigit);
-      int lastDigit = str_find_last_char(&line, isDigit);
-      ld_t lds = find_letter_digits(&line);
+      int  firstDigit = str_find_char(&line, isDigit);
+      int  lastDigit  = str_find_last_char(&line, isDigit);
+      ld_t lds        = find_letter_digits(&line);
       if (firstDigit == -1 && lds.d1_idx == -1) {
         fprintf(stderr, "Invalid line: %.*s\n", (int)line.len, line.data);
         return EXIT_FAILURE;
       }
       // find actual first and last digit
       char num[3] = {0, 0, 0};
-      lds.d1_idx = lds.d1_idx == -1 ? firstDigit : lds.d1_idx;
+      lds.d1_idx  = lds.d1_idx == -1 ? firstDigit : lds.d1_idx;
       if (firstDigit == -1 || firstDigit > lds.d1_idx) {
         num[0] = lds.d1;
       } else {
@@ -93,8 +92,7 @@ int main(int argc, char *argv[]) {
         num[1] = line.data[lastDigit];
       }
       int lineNum = atoi(num);
-      printf("%.*s: %d\n", (int)line.len, line.data /*has no null terminator*/,
-             lineNum);
+      printf("%.*s: %d\n", (int)line.len, line.data /*has no null terminator*/, lineNum);
       sum += lineNum;
     }
   }

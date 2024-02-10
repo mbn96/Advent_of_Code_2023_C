@@ -13,13 +13,12 @@ int main(int argc, char *argv[]) {
 
   LINER(games, fc);
   str_view game;
-  size_t gameID = 1, id_sum = 0, color_sum = 0;
+  size_t   gameID = 1, id_sum = 0, color_sum = 0;
   while (next_token(&games, &game)) {
     char *new_pos = strchr(game.data, ':') + 1;
     game.len -= new_pos - game.data;
-    game.data = new_pos;
-
-    bool possible = true;
+    game.data           = new_pos;
+    bool   possible     = true;
     size_t max_color[3] = {0, 0, 0};
 
     str_view pick;
@@ -31,22 +30,25 @@ int main(int argc, char *argv[]) {
         ++color.data;
         --color.len;
         char *c_name = strchr(color.data, ' ');
-        *c_name = '\0';
+        *c_name      = '\0';
         ++c_name;
         size_t count = atoi(color.data);
         switch (c_name[0]) {
         case 'r':
-          possible = possible && count <= 12;
+          possible     = possible && count <= 12;
           max_color[0] = count > max_color[0] ? count : max_color[0];
           break;
         case 'g':
-          possible = possible && count <= 13;
+          possible     = possible && count <= 13;
           max_color[1] = count > max_color[1] ? count : max_color[1];
           break;
         case 'b':
-          possible = possible && count <= 14;
+          possible     = possible && count <= 14;
           max_color[2] = count > max_color[2] ? count : max_color[2];
           break;
+        default:
+          fprintf(stderr, "Invalid color name: %s\n", c_name);
+          return EXIT_FAILURE;
         }
         printf("%.*s\n", (int)color.len, color.data);
       }

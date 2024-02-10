@@ -43,19 +43,18 @@ int main(int argc, char *argv[]) {
 
   // finding width and height
   size_t width = 0, height = 0;
-  char *firstLine = strchr(fc.data, '\n');
-  width = firstLine - fc.data;
-  height = (fc.len + 1 /* for last \n*/) / (width + 1);
+  char  *firstLine = strchr(fc.data, '\n');
+  width            = firstLine - fc.data;
+  height           = (fc.len + 1 /* for last \n*/) / (width + 1);
 
   char *grid[height];
   for (size_t i = 0; i < height; i++) {
-    grid[i] = fc.data + i * (width + 1);
-    grid[i][width] =
-        '\0'; // the last line is null terminated so it's not out of bounds.
+    grid[i]        = fc.data + i * (width + 1);
+    grid[i][width] = '\0'; // the last line is null terminated so it's not out of bounds.
   }
-  size_t part_sum = 0;
-  size_t gear_ratio_sum = 0;
-  hash_map *hm = hash_map_new(hash_int, coord_cmp_func);
+  size_t    part_sum       = 0;
+  size_t    gear_ratio_sum = 0;
+  hash_map *hm             = hash_map_new(hash_int, coord_cmp_func);
   for (size_t i = 0; i < height; i++) {
     char *row = grid[i];
     while (*row != '\0') {
@@ -68,23 +67,23 @@ int main(int argc, char *argv[]) {
 
         // num bounding box
         char *left = row, *right = row + j;
-        int top, bottom;
-        left = row != grid[i] ? left - 1 : left;
-        top = i != 0 ? -1 : 0;
-        bottom = i != height - 1 ? 1 : 0;
+        int   top, bottom;
+        left        = row != grid[i] ? left - 1 : left;
+        top         = i != 0 ? -1 : 0;
+        bottom      = i != height - 1 ? 1 : 0;
 
         bool isPart = false;
         for (; top <= bottom; ++top) {
           char *start = left + top * (width + 1);
-          char *end = right + top * (width + 1);
+          char *end   = right + top * (width + 1);
           for (; start <= end; ++start) {
             if (!isDigit(*start) && *start != '.' && *start != '\0') {
               isPart = true;
               if (*start == '*') {
                 gear_data gear_d;
-                coord c = {.y = i + top, .x = start - grid[i + top]};
-                bool hasGear = false;
-                void *gear_d_temp = hash_map_get(hm, (void *)c.val, &hasGear);
+                coord     c           = {.y = i + top, .x = start - grid[i + top]};
+                bool      hasGear     = false;
+                void     *gear_d_temp = hash_map_get(hm, (void *)c.val, &hasGear);
                 if (!hasGear) {
                   gear_d.ratio = num;
                   gear_d.count = 1;
