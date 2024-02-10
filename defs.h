@@ -67,8 +67,8 @@ typedef struct {
 hash_map *hash_map_new(hash_func hf, cmp_func cf);
 void hash_map_free(hash_map *hm);
 
-void *hash_map_get(hash_map *hm, void *key);
+void *hash_map_get(const hash_map *hm, const void *key, bool *hasValue);
 void hash_map_put(hash_map *hm, void *key, void *value);
 
-bool hash_map_has(hash_map *hm, void *key);
+bool hash_map_has(const hash_map *hm, const void *key);
 bool hash_map_remove(hash_map *hm, void *key);

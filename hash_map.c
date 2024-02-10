@@ -70,7 +70,7 @@ static void hash_map_resize(hash_map *hm) {
   hm->size = new_size;
 }
 
-static hash_map_node *hash_map_find(hash_map *hm, void *key) {
+static hash_map_node *hash_map_find(const hash_map *hm, const void *key) {
   size_t idx = hm->hf(key) & (hm->size - 1);
   hash_map_node *node = hm->nodes[idx];
   while (node != NULL) {
@@ -82,8 +82,9 @@ static hash_map_node *hash_map_find(hash_map *hm, void *key) {
   return NULL;
 }
 
-void *hash_map_get(hash_map *hm, void *key) {
+void *hash_map_get(const hash_map *hm, const void *key, bool *hasValue) {
   hash_map_node *node = hash_map_find(hm, key);
+  *hasValue = node != NULL; // So we could store a NULL value
   return node == NULL ? NULL : node->value;
 }
 void hash_map_put(hash_map *hm, void *key, void *value) {
@@ -102,7 +103,7 @@ void hash_map_put(hash_map *hm, void *key, void *value) {
   node->value = value;
 }
 
-bool hash_map_has(hash_map *hm, void *key) {
+bool hash_map_has(const hash_map *hm, const void *key) {
   return hash_map_find(hm, key) != NULL;
 }
 bool hash_map_remove(hash_map *hm, void *key) {

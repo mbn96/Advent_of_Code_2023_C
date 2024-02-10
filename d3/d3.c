@@ -4,7 +4,7 @@
  * Structs for storing x and y coordinates and gear data, for a 64-bit machine,
  * I might change it to support 32-bit later. I am trying to keep it as simple
  * as possible. only allocate memory on the stack. We could change the hash_map
- * implementation later to support for sized-types since we already have use
+ * implementation later to support for sized-types since we already use
  * malloc for bucket nodes.
  * But for now I'm casting a 64-bit value as a void* so I don't need to allocate
  * memory on the heap for data structs.
@@ -83,8 +83,9 @@ int main(int argc, char *argv[]) {
               if (*start == '*') {
                 gear_data gear_d;
                 coord c = {.y = i + top, .x = start - grid[i + top]};
-                void *gear_d_temp = hash_map_get(hm, (void *)c.val);
-                if (gear_d_temp == NULL) {
+                bool hasGear = false;
+                void *gear_d_temp = hash_map_get(hm, (void *)c.val, &hasGear);
+                if (!hasGear) {
                   gear_d.ratio = num;
                   gear_d.count = 1;
                 } else {
@@ -115,7 +116,7 @@ int main(int argc, char *argv[]) {
   printf("Part sum: %zu\n", part_sum);
   printf("Gear ratio sum: %zu\n", gear_ratio_sum);
 
-  hash_map_free(hm);
+  hash_map_free(hm); // Not nessessary because we're exiting but good practice
   free(fc.data);
   return EXIT_SUCCESS;
 }
