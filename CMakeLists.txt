@@ -29,3 +29,6 @@ target_link_libraries(day2 common)
 
 add_executable(day3 "./d3/d3.c")
 target_link_libraries(day3 common)
+
+add_executable(day4 "./d4/d4.c")
+target_link_libraries(day4 common)
