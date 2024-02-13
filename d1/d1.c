@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
     return EXIT_FAILURE;
   }
 
-  LINER(lines, fc);
+  Spliter lines = LINER(fc);
   str_view line;
   size_t   sum = 0;
   while (next_token(&lines, &line)) {

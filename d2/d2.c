@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
     return EXIT_FAILURE;
   }
 
-  LINER(games, fc);
+  Spliter  games = LINER(fc);
   str_view game;
   size_t   gameID = 1, id_sum = 0, color_sum = 0;
   while (next_token(&games, &game)) {
@@ -22,10 +22,10 @@ int main(int argc, char *argv[]) {
     size_t max_color[3] = {0, 0, 0};
 
     str_view pick;
-    SPLITTER(picks, game, ';');
+    Spliter  picks = SPLITTER(game, ';');
     while (next_token(&picks, &pick)) {
       str_view color;
-      SPLITTER(colors, pick, ',');
+      Spliter  colors = SPLITTER(pick, ',');
       while (next_token(&colors, &color)) {
         ++color.data;
         --color.len;

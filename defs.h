@@ -35,8 +35,8 @@ typedef struct {
 
 typedef bool (*predicate)(char a);
 
-#define SPLITTER(name, strv, dlm) Spliter name = {.fc = (strv), .pos = (strv).data, .delim = (dlm)}
-#define LINER(name, fc)           SPLITTER(name, fc, '\n')
+#define SPLITTER(strv, dlm) (Spliter) { .fc = (strv), .pos = (strv).data, .delim = (dlm) }
+#define LINER(fc) SPLITTER(fc, '\n')
 
 bool read_file(const char *path, file_content *fc);
 
